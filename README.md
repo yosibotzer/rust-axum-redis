@@ -1,6 +1,6 @@
 ## RUST-AXUM-REDIS Service
 
-Example of rest API, reading and writing from Redis, written in Rust and using the Axum framework
+Example of REST API, reading and writing from Redis, written in Rust and using the Axum framework
 
 
 ### Build service docker
