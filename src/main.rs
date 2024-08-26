@@ -4,12 +4,11 @@ mod controller;
 
 use std::env;
 
-use axum::{http::StatusCode, routing::get, Router};
+use axum::Router;
 use bb8_redis::{bb8::Pool, RedisConnectionManager};
 
 use strum_macros::EnumString;
 use tokio::net::TcpListener;
-use tower_http::compression::CompressionLayer;
 
 use tracing::{info, level_filters::LevelFilter};
 use tracing_subscriber::{layer::SubscriberExt, EnvFilter, Registry};
@@ -45,18 +44,13 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let listener = TcpListener::bind("0.0.0.0:3000").await?;
     
     let app = Router::new()
-        .route("/status", get(status))
-        .merge(get_service_routes(service_state))
-        .layer(CompressionLayer::new());
+        .merge(get_service_routes(service_state));
 
     axum::serve(listener, app).await?;
 
     Ok(())
 }
 
-async fn status() -> (StatusCode, String) {
-    (StatusCode::OK, "Everything is OK".to_string())
-}
 
 fn set_tracing(run_mode: &RunMode) -> Result<(), Box<dyn std::error::Error>> {
     

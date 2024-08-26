@@ -6,6 +6,7 @@ use axum::http::StatusCode;
 use axum::response::{IntoResponse, Response};
 use axum::{Json, Router};
 use axum::routing::get;
+use tower_http::compression::CompressionLayer;
 
 use crate::model::api::RedisSetRequest;
 use crate::model::service_state::ServiceState;
@@ -15,9 +16,15 @@ use crate::service::redis_service;
 pub fn get_service_routes(service_state: ServiceState) -> Router {
 
     Router::new()
+        .route("/status", get(status))
         .route("/redis/set/:key/:value", get(redis_set))
         .route("/redis/get/:key", get(redis_get))
         .with_state(Arc::new(service_state))
+        .layer(CompressionLayer::new())
+}
+
+async fn status() -> (StatusCode, String) {
+    (StatusCode::OK, "Everything is OK".to_string())
 }
 
 async fn redis_get(State(service_state): State<Arc<ServiceState>>, Path(key): Path<String>) 
