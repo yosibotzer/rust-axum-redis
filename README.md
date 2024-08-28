@@ -8,7 +8,7 @@ Example of REST API, reading and writing from Redis, written in Rust and using t
 docker build --progress=plain -t rust-axum-redis .
 ```
 
-### Start Postgres docker
+### Start Redis docker
 ```
 docker run -d --name redis-stack -p 6379:6379 -p 8001:8001 redis/redis-stack:latest
 ```
