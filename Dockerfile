@@ -1,4 +1,4 @@
-FROM rust:1.80-bookworm AS build
+FROM rust:1.89-bookworm AS build
 
 # create a new empty shell project
 RUN USER=root cargo new --bin rust-axum-redis

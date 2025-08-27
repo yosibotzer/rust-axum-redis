@@ -31,7 +31,7 @@ pub async fn redis_set(redis_state: Arc<ServiceState>, redis_set: &RedisSetReque
 
     let mut conn = get_connection(&redis_state).await?;
 
-    conn
+    let _: () = conn
         .set(&redis_set.key, &redis_set.value)
         .await
         .map_err(|e| map_redis_set_error(e, &redis_set))?;
@@ -39,7 +39,7 @@ pub async fn redis_set(redis_state: Arc<ServiceState>, redis_set: &RedisSetReque
     Ok(())
 }
 
-async fn get_connection(redis_state: &Arc<ServiceState>) -> Result<PooledConnection<RedisConnectionManager>, RepoError> {
+async fn get_connection(redis_state: &Arc<ServiceState>) -> Result<PooledConnection<'_, RedisConnectionManager>, RepoError> {
    
     let conn = redis_state.redis_pool
         .get()
@@ -49,7 +49,7 @@ async fn get_connection(redis_state: &Arc<ServiceState>) -> Result<PooledConnect
     Ok(conn)
 }
 
-fn map_redis_connection_error(e: bb8_redis::bb8::RunError<redis::RedisError>) -> RepoError {
+fn map_redis_connection_error(e: bb8_redis::bb8::RunError<bb8_redis::redis::RedisError>) -> RepoError {
     error!("Redis connection error: {:?}", e);
     RedisConnectionError
 }                               
